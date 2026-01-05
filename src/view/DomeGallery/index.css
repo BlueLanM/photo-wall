@@ -1,0 +1,173 @@
+/* stylelint-disable selector-class-pattern */
+.sphere-root {
+	--radius: 520px;
+	--viewer-pad: 72px;
+	--circ: calc(var(--radius) * 3.14);
+	--rot-y: calc((360deg / var(--segments-x)) / 2);
+	--rot-x: calc((360deg / var(--segments-y)) / 2);
+	--item-width: calc(var(--circ) / var(--segments-x));
+	--item-height: calc(var(--circ) / var(--segments-y));
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+.sphere-root * {
+	box-sizing: border-box;
+}
+.sphere,
+.item,
+.item__image {
+	transform-style: preserve-3d;
+}
+main.sphere-main {
+	display: grid;
+	overflow: hidden;
+	position: absolute;
+	background: transparent;
+	user-select: none;
+	inset: 0;
+	place-items: center;
+	touch-action: none;
+}
+.stage {
+	display: grid;
+	width: 100%;
+	height: 100%;
+	perspective: calc(var(--radius) * 2);
+	perspective-origin: 50% 50%;
+	place-items: center;
+	contain: layout paint size;
+}
+.sphere {
+	will-change: transform;
+	transform: translateZ(calc(var(--radius) * -1));
+}
+.overlay,
+.overlay--blur {
+	position: absolute;
+	z-index: 3;
+	margin: auto;
+	pointer-events: none;
+	inset: 0;
+}
+.overlay {
+	background-image: radial-gradient(rgba(235, 235, 235, 0) 65%, var(--overlay-blur-color, #060010) 100%);
+}
+.overlay--blur {
+	mask-image: radial-gradient(rgba(235, 235, 235, 0) 70%, var(--overlay-blur-color, #060010) 90%);
+	backdrop-filter: blur(3px);
+}
+.item {
+	position: absolute;
+	left: -999px;
+	right: -999px;
+	top: -999px;
+	bottom: -999px;
+	margin: auto;
+	width: calc(var(--item-width) * var(--item-size-x));
+	height: calc(var(--item-height) * var(--item-size-y));
+	backface-visibility: hidden;
+	transform: rotateY(calc(var(--rot-y) * (var(--offset-x) + ((var(--item-size-x) - 1) / 2)) + var(--rot-y-delta, 0deg)))
+		rotateX(calc(var(--rot-x) * (var(--offset-y) - ((var(--item-size-y) - 1) / 2)) + var(--rot-x-delta, 0deg)))
+		translateZ(var(--radius));
+	transform-origin: 50% 50%;
+	transition: transform 300ms;
+}
+.item__image {
+	display: block;
+	overflow: hidden;
+	position: absolute;
+	border-radius: var(--tile-radius, 12px);
+	background: transparent;
+	cursor: pointer;
+	pointer-events: auto;
+	backface-visibility: hidden;
+	transform: translateZ(0);
+	transition: transform 300ms;
+	inset: 10px;
+	-webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
+}
+.item__image:focus {
+	outline: none;
+}
+.item__image img {
+	width: 100%;
+	height: 100%;
+	/* filter: var(--image-filter, none); */
+	object-fit: cover;
+	pointer-events: none;
+	backface-visibility: hidden;
+}
+.viewer {
+	display: flex;
+	position: absolute;
+	z-index: 20;
+	justify-content: center;
+	align-items: center;
+	padding: var(--viewer-pad);
+	pointer-events: none;
+	inset: 0;
+}
+.viewer .frame {
+	display: flex;
+	border-radius: var(--enlarge-radius, 32px);
+	height: 100%;
+	aspect-ratio: 1;
+}
+@media (max-aspect-ratio: 1/1) {
+	.viewer .frame {
+		width: 100%;
+		height: auto;
+	}
+}
+.viewer .scrim {
+	position: absolute;
+	z-index: 10;
+	background: rgba(0, 0, 0, 0.4);
+	backdrop-filter: blur(3px);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 500ms ease;
+	inset: 0;
+}
+.sphere-root[data-enlarging='true'] .viewer .scrim {
+	opacity: 1;
+	pointer-events: all;
+}
+.viewer .enlarge {
+	overflow: hidden;
+	position: absolute;
+	z-index: 30;
+	border-radius: var(--enlarge-radius, 32px);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+	transform-origin: top left;
+	transition:
+		transform 500ms ease,
+		opacity 500ms ease;
+}
+.viewer .enlarge img {
+	width: 100%;
+	height: 100%;
+	/* filter: var(--image-filter, none); */
+	object-fit: cover;
+}
+.sphere-root .enlarge-closing img {
+	/* filter: var(--image-filter, none); */
+}
+.edge-fade {
+	position: absolute;
+	left: 0;
+	right: 0;
+	z-index: 5;
+	height: 120px;
+	background: linear-gradient(to bottom, transparent, var(--overlay-blur-color, #060010));
+	pointer-events: none;
+}
+.edge-fade--top {
+	top: 0;
+	transform: rotate(180deg);
+}
+.edge-fade--bottom {
+	bottom: 0;
+}

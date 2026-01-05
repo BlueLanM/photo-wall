@@ -1,0 +1,19 @@
+.gallery-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 2rem;
+	min-height: 80vh;
+}
+.gallery-container h1 {
+	margin-bottom: 2rem;
+	text-align: center;
+	font-size: 2.5rem;
+	color: #fff;
+}
+.gallery-content {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex: 1;
+}

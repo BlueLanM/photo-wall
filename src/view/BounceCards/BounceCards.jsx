@@ -11,16 +11,32 @@ export default function BounceCards({
 	animationDelay = 0.5,
 	animationStagger = 0.06,
 	easeType = "elastic.out(1, 0.8)",
-	transformStyles = [
-		"rotate(10deg) translate(-170px)",
-		"rotate(5deg) translate(-85px)",
-		"rotate(-3deg)",
-		"rotate(-10deg) translate(85px)",
-		"rotate(2deg) translate(170px)"
-	],
+	transformStyles = null,
 	enableHover = true
 }) {
 	const containerRef = useRef(null);
+
+	// 自动生成 transformStyles，如果没有提供的话
+	const getDefaultTransformStyles = (count) => {
+		if (count === 0) return [];
+		if (count === 1) return ["rotate(0deg)"];
+
+		const styles = [];
+		const spacing = 170; // 每张卡片之间的间距
+		const totalWidth = (count - 1) * spacing;
+		const startOffset = -totalWidth / 2;
+
+		for (let i = 0; i < count; i++) {
+			const offset = startOffset + i * spacing;
+			const rotation = (i - (count - 1) / 2) * (count <= 5 ? 5 : 3); // 根据数量调整旋转角度
+			styles.push(`rotate(${rotation}deg) translate(${offset}px)`);
+		}
+
+		return styles;
+	};
+
+	const finalTransformStyles = transformStyles || getDefaultTransformStyles(images.length);
+
 	useEffect(() => {
 		const ctx = gsap.context(() => {
 			gsap.fromTo(
@@ -69,7 +85,7 @@ export default function BounceCards({
 			const target = q(`.card-${i}`);
 			gsap.killTweensOf(target);
 
-			const baseTransform = transformStyles[i] || "none";
+			const baseTransform = finalTransformStyles[i] || "none";
 
 			if (i === hoveredIdx) {
 				const noRotationTransform = getNoRotationTransform(baseTransform);
@@ -105,7 +121,7 @@ export default function BounceCards({
 		images.forEach((_, i) => {
 			const target = q(`.card-${i}`);
 			gsap.killTweensOf(target);
-			const baseTransform = transformStyles[i] || "none";
+			const baseTransform = finalTransformStyles[i] || "none";
 			gsap.to(target, {
 				duration: 0.4,
 				ease: "back.out(1.4)",
@@ -130,7 +146,7 @@ export default function BounceCards({
 					key={idx}
 					className={`card card-${idx}`}
 					style={{
-						transform: transformStyles[idx] ?? "none"
+						transform: finalTransformStyles[idx] ?? "none"
 					}}
 					onMouseEnter={() => pushSiblings(idx)}
 					onMouseLeave={resetSiblings}
