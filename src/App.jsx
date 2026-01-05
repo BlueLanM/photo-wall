@@ -10,9 +10,9 @@ import "./App.css";
 const logoSvg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%23667eea'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E";
 
 const navItems = [
-	{ href: "/", label: "Gallery" },
-	{ href: "/domegallery", label: "DomeGallery" },
-	{ href: "/imagetrail", label: "ImageTrail" }
+	{ href: "/photo-wall", label: "Gallery" },
+	{ href: "/photo-wall/domegallery", label: "DomeGallery" },
+	{ href: "/photo-wall/imagetrail", label: "ImageTrail" }
 ];
 
 function App() {
@@ -39,9 +39,9 @@ function App() {
 				initialLoadAnimation={isFirstLoad}
 			/>
 			<Routes>
-				<Route path="/" element={<Gallery />} />
-				<Route path="/domegallery" element={<DomeGallery />} />
-				<Route path="/imagetrail" element={<ImageTrail />} />
+				<Route path="/photo-wall" element={<Gallery />} />
+				<Route path="/photo-wall/domegallery" element={<DomeGallery />} />
+				<Route path="/photo-wall/imagetrail" element={<ImageTrail />} />
 			</Routes>
 		</div>
 	);
