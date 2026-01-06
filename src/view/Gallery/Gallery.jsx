@@ -1,29 +1,49 @@
+import { useMemo } from "react";
 import BounceCards from "../BounceCards/BounceCards";
 import "./Gallery.css";
+import image1 from "../../assets/love1.jpg";
+import image2 from "../../assets/100day.jpg";
+import image3 from "../../assets/love2.jpg";
+import image4 from "../../assets/200day.jpg";
+import image5 from "../../assets/love3.jpg";
+import image6 from "../../assets/300day.jpg";
 
-const images = [
-	"https://bluelanm.github.io/my-website/assets/images/love5-dc60da6911bfe47c236fac38efae9c59.jpg",
-	"https://bluelanm.github.io/my-website/assets/images/100day-c72b8826793f756550401272013ae989.jpg",
-	"https://bluelanm.github.io/my-website/assets/images/love7-74dbe379a16a37e4906e9faffb749269.jpg",
-	"https://bluelanm.github.io/my-website/assets/images/200day-721dd5edc2cc9cc28ffccb15b14a6113.jpg",
-	"https://bluelanm.github.io/my-website/assets/images/love8-2921751412fc55d29df743ce1df9dc74.jpg",
-	"https://bluelanm.github.io/my-website/assets/images/300day-63f0684761df1eee48999728e14231f8.jpg"
+// 图片配置常量
+const GALLERY_CONFIG = {
+	title: "LOVE",
+	animationDelay: 0.1,
+	animationStagger: 0.1,
+};
+
+// 图片数据配置
+const IMAGES_DATA = [
+	{ src: image1, alt: "Love moment 1", id: "love-1" },
+	{ src: image2, alt: "100 days together", id: "100day" },
+	{ src: image3, alt: "Love moment 2", id: "love-2" },
+	{ src: image4, alt: "200 days together", id: "200day" },
+	{ src: image5, alt: "Love moment 3", id: "love-3" },
+	{ src: image6, alt: "300 days together", id: "300day" },
 ];
 
 export default function Gallery() {
+	// 使用 useMemo 缓存图片数组,避免每次渲染重新创建
+	const images = useMemo(() => IMAGES_DATA.map(img => img.src), []);
+
 	return (
 		<div className="gallery-container">
-			<h1>LOVE</h1>
+			<header className="gallery-header">
+				<h1 className="gallery-title">{GALLERY_CONFIG.title}</h1>
+			</header>
 
-			<div className="gallery-content">
+			<main className="gallery-content">
 				<BounceCards
 					images={images}
 					enableHover
-					animationDelay={0.1}
-					animationStagger={0.1}
+					animationDelay={GALLERY_CONFIG.animationDelay}
+					animationStagger={GALLERY_CONFIG.animationStagger}
 					className="custom-bounceCards"
 				/>
-			</div>
+			</main>
 		</div>
 	);
 }

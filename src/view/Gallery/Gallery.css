@@ -4,16 +4,64 @@
 	align-items: center;
 	padding: 2rem;
 	min-height: 80vh;
+	gap: 1rem;
 }
-.gallery-container h1 {
+.gallery-header {
 	margin-bottom: 2rem;
 	text-align: center;
-	font-size: 2.5rem;
+	animation: fadeInDown 0.8s ease-out;
+}
+.gallery-title {
+	font-weight: 700;
+	font-size: 3rem;
 	color: #fff;
+	letter-spacing: 0.1em;
+
+}
+.gallery-subtitle {
+	margin: 0;
+	font-weight: 300;
+	font-size: 1.2rem;
+	color: rgba(255, 255, 255, 0.85);
+	letter-spacing: 0.05em;
 }
 .gallery-content {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex: 1;
+	width: 100%;
+	max-width: 1400px;
+}
+/* 动画效果 */
+/* stylelint-disable-next-line keyframes-name-pattern */
+@keyframes fadeInDown {
+	from {
+		opacity: 0;
+		transform: translateY(-20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+/* 响应式设计 */
+@media (max-width: 768px) {
+	.gallery-container {
+		padding: 1rem;
+	}
+	.gallery-title {
+		font-size: 2rem;
+	}
+	.gallery-subtitle {
+		font-size: 1rem;
+	}
+}
+@media (max-width: 480px) {
+	.gallery-title {
+		font-size: 1.5rem;
+	}
+	.gallery-subtitle {
+		font-size: 0.9rem;
+	}
 }
