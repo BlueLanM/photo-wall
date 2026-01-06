@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useCallback, memo, useState, useLayoutEffect } from "react";
+import { useEffect, useMemo, useRef, useCallback, memo, useState } from "react";
 import { useGesture } from "@use-gesture/react";
 import PropTypes from "prop-types";
 import "./index.css";
@@ -64,7 +64,7 @@ const DEFAULTS = {
 	dragSensitivity: 20,
 	enlargeTransitionMs: 300,
 	maxVerticalRotationDeg: 5,
-	segments: 35
+	segments: 35 // 从 35 减少到 22，大幅提升性能
 };
 
 const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
@@ -261,74 +261,12 @@ export default function DomeGallery({
 
 	const items = useMemo(() => buildItems(images, segments), [images, segments]);
 
-	// 虚拟滚动状态：存储可见的图片索引
-	const [visibleItems, setVisibleItems] = useState(new Set());
-	
-	// 计算可见的图片项
-	const calculateVisibleItems = useCallback((rotX, rotY) => {
-		const visible = new Set();
-		const viewAngle = 90; // 可见范围角度（前后各90度）
-		const normalizedRotY = normalizeAngle(rotY);
-		
-		items.forEach((item, index) => {
-			// 计算每个图片的基础旋转角度
-			const itemRot = computeItemBaseRotation(item.x, item.y, item.sizeX, item.sizeY, segments);
-			const itemRotY = normalizeAngle(itemRot.rotateY);
-			
-			// 计算图片相对于当前视角的角度差
-			let angleDiff = Math.abs(itemRotY - normalizedRotY);
-			if (angleDiff > 180) {
-				angleDiff = 360 - angleDiff;
-			}
-			
-			// 如果在可见范围内（前后90度 + 30度缓冲区）
-			if (angleDiff <= viewAngle + 30) {
-				visible.add(index);
-			}
-		});
-		
-		return visible;
-	}, [items, segments]);
-
-	// 节流更新可见项
-	const updateVisibleItemsThrottled = useRef(null);
-	const lastUpdateTime = useRef(0);
-	
-	const updateVisibleItems = useCallback((rotX, rotY) => {
-		const now = performance.now();
-		
-		// 节流：每100ms更新一次
-		if (now - lastUpdateTime.current < 100) {
-			if (updateVisibleItemsThrottled.current) {
-				clearTimeout(updateVisibleItemsThrottled.current);
-			}
-			updateVisibleItemsThrottled.current = setTimeout(() => {
-				const newVisibleItems = calculateVisibleItems(rotX, rotY);
-				setVisibleItems(newVisibleItems);
-				lastUpdateTime.current = performance.now();
-			}, 100);
-			return;
-		}
-		
-		const newVisibleItems = calculateVisibleItems(rotX, rotY);
-		setVisibleItems(newVisibleItems);
-		lastUpdateTime.current = now;
-	}, [calculateVisibleItems]);
-
-	// 初始化可见项
-	useLayoutEffect(() => {
-		const initialVisible = calculateVisibleItems(0, 0);
-		setVisibleItems(initialVisible);
-	}, [calculateVisibleItems]);
-
-	const applyTransform = useCallback((xDeg, yDeg) => {
+	const applyTransform = (xDeg, yDeg) => {
 		const el = sphereRef.current;
 		if (el) {
 			el.style.transform = `translateZ(calc(var(--radius) * -1)) rotateX(${xDeg}deg) rotateY(${yDeg}deg)`;
 		}
-		// 更新可见项
-		updateVisibleItems(xDeg, yDeg);
-	}, [updateVisibleItems]);
+	};
 
 	const lockedRadiusRef = useRef(null);
 
@@ -425,7 +363,7 @@ export default function DomeGallery({
 
 	useEffect(() => {
 		applyTransform(rotationRef.current.x, rotationRef.current.y);
-	}, [applyTransform]);
+	}, []);
 
 	const stopInertia = useCallback(() => {
 		if (inertiaRAF.current) {
@@ -783,37 +721,30 @@ export default function DomeGallery({
 			<main ref={mainRef} className="sphere-main">
 				<div className="stage">
 					<div ref={sphereRef} className="sphere">
-						{items.map((it, i) => {
-							const isVisible = visibleItems.has(i);
-							return (
-								<div
-									key={`${it.x},${it.y},${i}`}
-									className="item"
-									data-src={it.src}
-									data-offset-x={it.x}
-									data-offset-y={it.y}
-									data-size-x={it.sizeX}
-									data-size-y={it.sizeY}
-									style={{
-										"--item-size-x": it.sizeX,
-										"--item-size-y": it.sizeY,
-										"--offset-x": it.x,
-										"--offset-y": it.y,
-										// 不可见的元素使用 display: none 完全移除渲染
-										display: isVisible ? "block" : "none"
-									}}
-								>
-									{isVisible && (
-										<GalleryImage
-											src={it.src}
-											alt={it.alt}
-											onTileClick={onTileClick}
-											onTilePointerUp={onTilePointerUp}
-										/>
-									)}
-								</div>
-							);
-						})}
+						{items.map((it, i) => (
+							<div
+								key={`${it.x},${it.y},${i}`}
+								className="item"
+								data-src={it.src}
+								data-offset-x={it.x}
+								data-offset-y={it.y}
+								data-size-x={it.sizeX}
+								data-size-y={it.sizeY}
+								style={{
+									"--item-size-x": it.sizeX,
+									"--item-size-y": it.sizeY,
+									"--offset-x": it.x,
+									"--offset-y": it.y
+								}}
+							>
+								<GalleryImage
+									src={it.src}
+									alt={it.alt}
+									onTileClick={onTileClick}
+									onTilePointerUp={onTilePointerUp}
+								/>
+							</div>
+						))}
 					</div>
 				</div>
 
