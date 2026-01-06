@@ -39,11 +39,11 @@
 	overflow: hidden;
 	justify-content: center;
 	align-items: center;
-	padding: 8px;
+	/* padding: 8px; */
 	border-radius: 50%;
-	width: 24px;
-	height: 24px;
-	background: var(--base, #000);
+	width: 50px;
+	height: 50px;
+	/* background: var(--base, #000); */
 }
 .pill-logo img {
 	display: block;
@@ -111,12 +111,12 @@
 	left: 0;
 	top: 0;
 	z-index: 3;
-	color: var(--hover-text, #fff);
+	color: var(--hover-text, #000);
 	will-change: transform, opacity;
 }
 .pill.is-active {
 	background: #FFF;
-	color: #000;
+	color: #6B7FED;
 }
 .desktop-only {
 	display: block;
