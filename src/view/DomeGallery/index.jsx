@@ -6,6 +6,19 @@ import image1 from "../../assets/1.jpg";
 import image2 from "../../assets/2.jpg";
 import image3 from "../../assets/3.jpg";
 import image4 from "../../assets/4.jpg";
+import image5 from "../../assets/5.jpg";
+import image6 from "../../assets/6.jpg";
+import image7 from "../../assets/7.jpg";
+import image8 from "../../assets/8.jpg";
+import image9 from "../../assets/9.jpg";
+import image10 from "../../assets/10.jpg";
+import image11 from "../../assets/11.jpg";
+import image12 from "../../assets/12.jpg";
+import image13 from "../../assets/13.jpg";
+import image14 from "../../assets/14.jpg";
+import image15 from "../../assets/15.jpg";
+import image16 from "../../assets/16.jpg";
+import image17 from "../../assets/17.jpg";
 
 const DEFAULT_IMAGES = [
 	{
@@ -55,6 +68,58 @@ const DEFAULT_IMAGES = [
 	{
 		alt: "珠海",
 		src: image4
+	},
+	{
+		alt: "云南",
+		src: image5
+	},
+	{
+		alt: "云南",
+		src: image6
+	},
+	{
+		alt: "云南",
+		src: image7
+	},
+	{
+		alt: "云南",
+		src: image8
+	},
+	{
+		alt: "云南",
+		src: image9
+	},
+	{
+		alt: "云南",
+		src: image10
+	},
+	{
+		alt: "云南",
+		src: image11
+	},
+	{
+		alt: "云南",
+		src: image12
+	},
+	{
+		alt: "云南",
+		src: image13
+	},
+	{
+		alt: "云南",
+		src: image14
+	},
+	{
+		alt: "云南",
+		src: image15
+	},
+	{
+		alt: "云南",
+		src: image16
+	},
+	{
+		alt: "云南",
+		src: image17
 	}
 ];
 

@@ -1053,16 +1053,16 @@ const variantMap = {
 
 // 默认图片
 const DEFAULT_ITEMS = [
-	"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400",
-	"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400",
-	"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400",
-	"https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400",
-	"https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400",
-	"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
-	"https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400",
-	"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400",
-	"https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400",
-	"https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400"
+	"https://bluelanm.github.io/my-website/assets/images/1-1-644ad6464fcf87dd303dc40c7fd9bbc7.jpg",
+	"https://bluelanm.github.io/my-website/assets/images/7-1-1c4a1f91a82dd6bff2fc1246534ba576.jpg",
+	"https://bluelanm.github.io/my-website/assets/images/5-1-206868bfbdd062247b49b0063de2929c.jpg",
+	"https://bluelanm.github.io/my-website/assets/images/5-3-d7cd75ba9e2d4e92b15448daa1966fa8.jpg",
+	"https://bluelanm.github.io/my-website/assets/images/5-2-945a5c3c89502778e06ab04e5d947e9a.jpg",
+	"https://bluelanm.github.io/my-website/assets/images/4-1-549633e088c4f761abe70eee9a297bb5.jpg",
+	"https://bluelanm.github.io/my-website/assets/images/3-1-2b16c1638fd8f1d14361b69a497d47fb.jpg",
+	"https://bluelanm.github.io/my-website/assets/images/1-3-62d23ad0304718424950615670d5f91b.jpg",
+	"https://bluelanm.github.io/my-website/assets/images/7-2-95557f352e697a1fce63922879ad135d.jpg",
+	"https://bluelanm.github.io/my-website/assets/images/1-2-2fe72fadb442dc4c1452a8adcdc4fd58.jpg"
 ];
 
 export default function ImageTrail({ items = DEFAULT_ITEMS, variant = 1 }) {
@@ -1079,9 +1079,8 @@ export default function ImageTrail({ items = DEFAULT_ITEMS, variant = 1 }) {
 	return (
 		<div className="content" ref={containerRef}>
 			{items.map((url, i) => (
-				<div className="content-img" key={i}>
-
-					<div className="content-img-inner" style={{ backgroundImage: `url(${url})` }} />
+				<div className="content__img" key={i}>
+					<div className="content__img-inner" style={{ backgroundImage: `url(${url})` }} />
 				</div>
 			))}
 		</div>

@@ -1,3 +1,4 @@
+/* stylelint-disable selector-class-pattern */
 .content {
 	overflow: visible;
 	position: relative;
@@ -7,7 +8,7 @@
 	height: 100%;
 	background: transparent;
 }
-.content-img {
+.content__img {
 	overflow: hidden;
 	position: absolute;
 	left: 0;
@@ -18,7 +19,7 @@
 	will-change: transform, filter;
 	aspect-ratio: 1.1;
 }
-.content-img-inner {
+.content__img-inner {
 	position: absolute;
 	left: calc(-1 * 20px / 2);
 	top: calc(-1 * 20px / 2);
