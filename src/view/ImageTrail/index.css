@@ -7,7 +7,7 @@
 	height: 100%;
 	background: transparent;
 }
-.content__img {
+.content-img {
 	overflow: hidden;
 	position: absolute;
 	left: 0;
@@ -18,7 +18,7 @@
 	will-change: transform, filter;
 	aspect-ratio: 1.1;
 }
-.content__img-inner {
+.content-img-inner {
 	position: absolute;
 	left: calc(-1 * 20px / 2);
 	top: calc(-1 * 20px / 2);

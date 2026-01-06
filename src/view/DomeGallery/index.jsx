@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import { useEffect, useMemo, useRef, useCallback } from "react";
 import { useGesture } from "@use-gesture/react";
 import PropTypes from "prop-types";

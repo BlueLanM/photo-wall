@@ -3,19 +3,13 @@ import globals from "globals";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
+import html from "eslint-plugin-html";
 
 export default [
 	{
-		ignores: [
-			"dist",
-			"build",
-			"node_modules",
-			"*.min.js",
-			".cache",
-			"coverage",
-			"public/**/*.svg"
-		]
+		ignores: ["dist", "node_modules", "docs"]
 	},
+	js.configs.recommended,
 	{
 		files: ["**/*.{js,jsx}"],
 		languageOptions: {
@@ -23,43 +17,60 @@ export default [
 			globals: {
 				...globals.browser,
 				...globals.node,
-				...globals.commonjs,
-				...globals.es2021,
-				...globals.jquery
+				...globals.es2021
 			},
 			parserOptions: {
-				ecmaFeatures: { jsx: true },
-				ecmaVersion: "latest",
-				sourceType: "module"
-			}
+				ecmaFeatures: {
+					jsx: true
+				}
+			},
+			sourceType: "module"
 		},
 		plugins: {
+			html,
 			react,
 			"react-hooks": reactHooks,
 			"react-refresh": reactRefresh
 		},
 		rules: {
-			...js.configs.recommended.rules,
+			// 继承 React JSX Runtime 配置
 			...react.configs.recommended.rules,
 			...react.configs["jsx-runtime"].rules,
-			...reactHooks.configs.recommended.rules,
-			// 自定义规则（参考全局配置）
+
 			"eol-last": ["error", "never"],
+			// 基础规则
 			indent: ["error", "tab"],
+
+			// 空行规则
+			"no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0, "maxBOF": 0 }],
+			// React 规则
 			"jsx-quotes": ["error", "prefer-double"],
+
 			"no-console": ["off"],
+
+			"no-extra-semi": ["error"],
+
 			"no-tabs": ["off"],
-			// Vite 相关
-			"no-unused-vars": ["error", { varsIgnorePattern: "^[A-Z_]" }],
+
 			"no-var": ["error"],
+
 			"object-curly-spacing": ["error", "always"],
+
 			quotes: ["error", "double"],
+
+			"react/prop-types": "off",
+
+			semi: ["error", "always"],
+			"space-before-function-paren": ["error", "never"],
+
+			// React Hooks 规则
+			...reactHooks.configs.recommended.rules,
+
+			// React Refresh 规则
 			"react-refresh/only-export-components": [
 				"warn",
 				{ allowConstantExport: true }
-			],
-			semi: ["error", "always"],
-			"space-before-function-paren": ["error", "never"]
+			]
 		},
 		settings: {
 			react: {
