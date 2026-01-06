@@ -13,7 +13,7 @@ const images = [
 export default function Gallery() {
 	return (
 		<div className="gallery-container">
-			<h1>Photo Gallery</h1>
+			<h1>LOVE</h1>
 
 			<div className="gallery-content">
 				<BounceCards

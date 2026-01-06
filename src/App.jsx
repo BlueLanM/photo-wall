@@ -10,9 +10,9 @@ import "./App.css";
 const logoSvg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%23667eea'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E";
 
 const navItems = [
-	{ href: "/photo-wall/", label: "Gallery" },
-	{ href: "/photo-wall/domegallery", label: "DomeGallery" },
-	{ href: "/photo-wall/imagetrail", label: "ImageTrail" }
+	{ href: "/photo-wall/", label: "纪念日" },
+	{ href: "/photo-wall/domegallery", label: "旅行" },
+	{ href: "/photo-wall/imagetrail", label: "画作" }
 ];
 
 function App() {

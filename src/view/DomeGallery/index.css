@@ -41,6 +41,8 @@ main.sphere-main {
 .sphere {
 	will-change: transform;
 	transform: translateZ(calc(var(--radius) * -1));
+	/* GPU 加速优化 */
+	transform-style: preserve-3d;
 }
 .overlay,
 .overlay--blur {
@@ -81,12 +83,15 @@ main.sphere-main {
 	background: transparent;
 	cursor: pointer;
 	pointer-events: auto;
+	/* 性能优化 */
+	will-change: transform;
 	backface-visibility: hidden;
 	transform: translateZ(0);
 	transition: transform 300ms;
 	inset: 10px;
 	-webkit-tap-highlight-color: transparent;
 	touch-action: manipulation;
+	contain: layout style paint;
 }
 .item__image:focus {
 	outline: none;
@@ -97,7 +102,11 @@ main.sphere-main {
 	/* filter: var(--image-filter, none); */
 	object-fit: cover;
 	pointer-events: none;
+	will-change: opacity;
 	backface-visibility: hidden;
+	/* 图片渲染优化 */
+	image-rendering: optimize-contrast;
+	image-rendering: crisp-edges;
 }
 .viewer {
 	display: flex;

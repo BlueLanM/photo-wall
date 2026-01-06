@@ -1,24 +1,12 @@
-import { useEffect, useMemo, useRef, useCallback } from "react";
+import { useEffect, useMemo, useRef, useCallback, memo, useState, useLayoutEffect } from "react";
 import { useGesture } from "@use-gesture/react";
 import PropTypes from "prop-types";
 import "./index.css";
-import image1 from "../../assets/1.jpg";
-import image2 from "../../assets/2.jpg";
-import image3 from "../../assets/3.jpg";
-import image4 from "../../assets/4.jpg";
-import image5 from "../../assets/5.jpg";
-import image6 from "../../assets/6.jpg";
-import image7 from "../../assets/7.jpg";
-import image8 from "../../assets/8.jpg";
-import image9 from "../../assets/9.jpg";
-import image10 from "../../assets/10.jpg";
-import image11 from "../../assets/11.jpg";
-import image12 from "../../assets/12.jpg";
-import image13 from "../../assets/13.jpg";
-import image14 from "../../assets/14.jpg";
-import image15 from "../../assets/15.jpg";
-import image16 from "../../assets/16.jpg";
-import image17 from "../../assets/17.jpg";
+
+// 使用动态导入优化初始加载
+const getLocalImage = (num) => {
+	return new URL(`../../assets/${num}.jpg`, import.meta.url).href;
+};
 
 const DEFAULT_IMAGES = [
 	{
@@ -53,74 +41,23 @@ const DEFAULT_IMAGES = [
 		alt: "戒指",
 		src: "https://bluelanm.github.io/my-website/assets/images/ring-da10a9d588709ee29ee0eb842145be7e.jpg"
 	},
-	{
-		alt: "珠海",
-		src: image1
-	},
-	{
-		alt: "珠海",
-		src: image2
-	},
-	{
-		alt: "珠海",
-		src: image3
-	},
-	{
-		alt: "珠海",
-		src: image4
-	},
-	{
-		alt: "云南",
-		src: image5
-	},
-	{
-		alt: "云南",
-		src: image6
-	},
-	{
-		alt: "云南",
-		src: image7
-	},
-	{
-		alt: "云南",
-		src: image8
-	},
-	{
-		alt: "云南",
-		src: image9
-	},
-	{
-		alt: "云南",
-		src: image10
-	},
-	{
-		alt: "云南",
-		src: image11
-	},
-	{
-		alt: "云南",
-		src: image12
-	},
-	{
-		alt: "云南",
-		src: image13
-	},
-	{
-		alt: "云南",
-		src: image14
-	},
-	{
-		alt: "云南",
-		src: image15
-	},
-	{
-		alt: "云南",
-		src: image16
-	},
-	{
-		alt: "云南",
-		src: image17
-	}
+	{ alt: "珠海", src: getLocalImage(1) },
+	{ alt: "珠海", src: getLocalImage(2) },
+	{ alt: "珠海", src: getLocalImage(3) },
+	{ alt: "珠海", src: getLocalImage(4) },
+	{ alt: "云南", src: getLocalImage(5) },
+	{ alt: "云南", src: getLocalImage(6) },
+	{ alt: "云南", src: getLocalImage(7) },
+	{ alt: "云南", src: getLocalImage(8) },
+	{ alt: "云南", src: getLocalImage(9) },
+	{ alt: "云南", src: getLocalImage(10) },
+	{ alt: "云南", src: getLocalImage(11) },
+	{ alt: "云南", src: getLocalImage(12) },
+	{ alt: "云南", src: getLocalImage(13) },
+	{ alt: "云南", src: getLocalImage(14) },
+	{ alt: "云南", src: getLocalImage(15) },
+	{ alt: "云南", src: getLocalImage(16) },
+	{ alt: "云南", src: getLocalImage(17) }
 ];
 
 const DEFAULTS = {
@@ -140,6 +77,79 @@ const getDataNumber = (el, name, fallback) => {
 	const attr = el.dataset[name] ?? el.getAttribute(`data-${name}`);
 	const n = attr == null ? NaN : parseFloat(attr);
 	return Number.isFinite(n) ? n : fallback;
+};
+
+// 防抖函数
+const debounce = (fn, delay) => {
+	let timeoutId;
+	return (...args) => {
+		clearTimeout(timeoutId);
+		timeoutId = setTimeout(() => fn(...args), delay);
+	};
+};
+
+// 优化的图片组件 - 使用 memo 避免不必要的重渲染
+const GalleryImage = memo(({ src, alt, onTileClick, onTilePointerUp }) => {
+	const [isLoaded, setIsLoaded] = useState(false);
+	const [shouldLoad, setShouldLoad] = useState(false);
+	const imgRef = useRef(null);
+
+	useEffect(() => {
+		// 使用 IntersectionObserver 实现懒加载
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						setShouldLoad(true);
+						observer.disconnect();
+					}
+				});
+			},
+			{
+				rootMargin: "200px" // 提前 200px 开始加载
+			}
+		);
+
+		if (imgRef.current) {
+			observer.observe(imgRef.current);
+		}
+
+		return () => observer.disconnect();
+	}, []);
+
+	return (
+		<div
+			ref={imgRef}
+			className="item__image"
+			role="button"
+			tabIndex={0}
+			aria-label={alt || "Open image"}
+			onClick={onTileClick}
+			onPointerUp={onTilePointerUp}
+		>
+			{shouldLoad && (
+				<img
+					src={src}
+					draggable={false}
+					alt={alt}
+					loading="lazy"
+					onLoad={() => setIsLoaded(true)}
+					style={{
+						opacity: isLoaded ? 1 : 0,
+						transition: "opacity 0.3s ease-in-out"
+					}}
+				/>
+			)}
+		</div>
+	);
+});
+
+GalleryImage.displayName = "GalleryImage";
+GalleryImage.propTypes = {
+	src: PropTypes.string.isRequired,
+	alt: PropTypes.string,
+	onTileClick: PropTypes.func.isRequired,
+	onTilePointerUp: PropTypes.func.isRequired
 };
 
 function buildItems(pool, seg) {
@@ -251,19 +261,83 @@ export default function DomeGallery({
 
 	const items = useMemo(() => buildItems(images, segments), [images, segments]);
 
-	const applyTransform = (xDeg, yDeg) => {
+	// 虚拟滚动状态：存储可见的图片索引
+	const [visibleItems, setVisibleItems] = useState(new Set());
+	
+	// 计算可见的图片项
+	const calculateVisibleItems = useCallback((rotX, rotY) => {
+		const visible = new Set();
+		const viewAngle = 90; // 可见范围角度（前后各90度）
+		const normalizedRotY = normalizeAngle(rotY);
+		
+		items.forEach((item, index) => {
+			// 计算每个图片的基础旋转角度
+			const itemRot = computeItemBaseRotation(item.x, item.y, item.sizeX, item.sizeY, segments);
+			const itemRotY = normalizeAngle(itemRot.rotateY);
+			
+			// 计算图片相对于当前视角的角度差
+			let angleDiff = Math.abs(itemRotY - normalizedRotY);
+			if (angleDiff > 180) {
+				angleDiff = 360 - angleDiff;
+			}
+			
+			// 如果在可见范围内（前后90度 + 30度缓冲区）
+			if (angleDiff <= viewAngle + 30) {
+				visible.add(index);
+			}
+		});
+		
+		return visible;
+	}, [items, segments]);
+
+	// 节流更新可见项
+	const updateVisibleItemsThrottled = useRef(null);
+	const lastUpdateTime = useRef(0);
+	
+	const updateVisibleItems = useCallback((rotX, rotY) => {
+		const now = performance.now();
+		
+		// 节流：每100ms更新一次
+		if (now - lastUpdateTime.current < 100) {
+			if (updateVisibleItemsThrottled.current) {
+				clearTimeout(updateVisibleItemsThrottled.current);
+			}
+			updateVisibleItemsThrottled.current = setTimeout(() => {
+				const newVisibleItems = calculateVisibleItems(rotX, rotY);
+				setVisibleItems(newVisibleItems);
+				lastUpdateTime.current = performance.now();
+			}, 100);
+			return;
+		}
+		
+		const newVisibleItems = calculateVisibleItems(rotX, rotY);
+		setVisibleItems(newVisibleItems);
+		lastUpdateTime.current = now;
+	}, [calculateVisibleItems]);
+
+	// 初始化可见项
+	useLayoutEffect(() => {
+		const initialVisible = calculateVisibleItems(0, 0);
+		setVisibleItems(initialVisible);
+	}, [calculateVisibleItems]);
+
+	const applyTransform = useCallback((xDeg, yDeg) => {
 		const el = sphereRef.current;
 		if (el) {
 			el.style.transform = `translateZ(calc(var(--radius) * -1)) rotateX(${xDeg}deg) rotateY(${yDeg}deg)`;
 		}
-	};
+		// 更新可见项
+		updateVisibleItems(xDeg, yDeg);
+	}, [updateVisibleItems]);
 
 	const lockedRadiusRef = useRef(null);
 
 	useEffect(() => {
 		const root = rootRef.current;
 		if (!root) return;
-		const ro = new ResizeObserver(entries => {
+		
+		// 使用防抖优化 ResizeObserver
+		const handleResize = debounce((entries) => {
 			const cr = entries[0].contentRect;
 			const w = Math.max(1, cr.width);
 			const h = Math.max(1, cr.height);
@@ -327,9 +401,14 @@ export default function DomeGallery({
 					enlargedOverlay.style.height = `${frameR.height}px`;
 				}
 			}
-		});
+		}, 100); // 100ms 防抖延迟
+
+		const ro = new ResizeObserver(handleResize);
 		ro.observe(root);
-		return () => ro.disconnect();
+		
+		return () => {
+			ro.disconnect();
+		};
 	}, [
 		fit,
 		fitBasis,
@@ -346,7 +425,7 @@ export default function DomeGallery({
 
 	useEffect(() => {
 		applyTransform(rotationRef.current.x, rotationRef.current.y);
-	}, []);
+	}, [applyTransform]);
 
 	const stopInertia = useCallback(() => {
 		if (inertiaRAF.current) {
@@ -704,34 +783,37 @@ export default function DomeGallery({
 			<main ref={mainRef} className="sphere-main">
 				<div className="stage">
 					<div ref={sphereRef} className="sphere">
-						{items.map((it, i) => (
-							<div
-								key={`${it.x},${it.y},${i}`}
-								className="item"
-								data-src={it.src}
-								data-offset-x={it.x}
-								data-offset-y={it.y}
-								data-size-x={it.sizeX}
-								data-size-y={it.sizeY}
-								style={{
-									"--item-size-x": it.sizeX,
-									"--item-size-y": it.sizeY,
-									"--offset-x": it.x,
-									"--offset-y": it.y
-								}}
-							>
+						{items.map((it, i) => {
+							const isVisible = visibleItems.has(i);
+							return (
 								<div
-									className="item__image"
-									role="button"
-									tabIndex={0}
-									aria-label={it.alt || "Open image"}
-									onClick={onTileClick}
-									onPointerUp={onTilePointerUp}
+									key={`${it.x},${it.y},${i}`}
+									className="item"
+									data-src={it.src}
+									data-offset-x={it.x}
+									data-offset-y={it.y}
+									data-size-x={it.sizeX}
+									data-size-y={it.sizeY}
+									style={{
+										"--item-size-x": it.sizeX,
+										"--item-size-y": it.sizeY,
+										"--offset-x": it.x,
+										"--offset-y": it.y,
+										// 不可见的元素使用 display: none 完全移除渲染
+										display: isVisible ? "block" : "none"
+									}}
 								>
-									<img src={it.src} draggable={false} alt={it.alt} />
+									{isVisible && (
+										<GalleryImage
+											src={it.src}
+											alt={it.alt}
+											onTileClick={onTileClick}
+											onTilePointerUp={onTilePointerUp}
+										/>
+									)}
 								</div>
-							</div>
-						))}
+							);
+						})}
 					</div>
 				</div>
 
