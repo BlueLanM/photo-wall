@@ -33,29 +33,36 @@
 /* 移动端适配 */
 @media (max-width: 768px) {
 	.bouncecrdscontainer {
-		overflow: visible;
-		padding: 40px 20px;
+		overflow-x: hidden; /* 防止水平滚动 */
+		overflow-y: visible; /* 允许垂直内容显示 */
+		padding: 30px 10px;
 		width: 100%;
 		height: auto;
 		min-height: 300px;
 	}
 	.bouncecrdscontainer.mobile {
-		overflow: visible;
+		overflow-x: hidden;
+		overflow-y: visible;
 		/* 确保有足够的高度容纳多行卡片 */
-		padding-bottom: 60px;
+		padding: 30px 10px 40px;
 	}
 	.card {
 		/* 移动端：移除默认的 left 和 top，使用 transform 定位 */
 		border: 3px solid #fff;
 		border-radius: 15px;
 		width: 120px;
+		/* 防止卡片移出屏幕 */
+		will-change: transform;
 	}
 }
 /* 小屏幕移动设备 */
 @media (max-width: 480px) {
 	.bouncecrdscontainer {
-		padding: 30px 15px 50px;
+		padding: 20px 10px 40px;
 		min-height: 250px;
+	}
+	.bouncecrdscontainer.mobile {
+		padding: 20px 5px 30px;
 	}
 	.card {
 		border: 2px solid #fff;

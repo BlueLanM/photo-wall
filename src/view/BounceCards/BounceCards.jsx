@@ -40,12 +40,10 @@ export default function BounceCards({
 			// 移动端：创建凌乱的卡片布局
 			const screenWidth = window.innerWidth;
 			const cardWidth = screenWidth <= 480 ? 100 : 120;
-			const padding = 20;
-			const availableWidth = screenWidth - padding * 2 - cardWidth;
 			
 			// 每行最多放置的卡片数（根据屏幕宽度动态计算）
-			const spacing = 50; // 卡片间距
-			const cardsPerRow = Math.floor((availableWidth + cardWidth) / (cardWidth * 0.7 + spacing)) || 1;
+			const spacing = screenWidth <= 480 ? 40 : 40; // 优化卡片间距
+			const cardsPerRow = Math.floor(screenWidth / (cardWidth + spacing)) || 2;
 			
 			for (let i = 0; i < count; i++) {
 				const row = Math.floor(i / cardsPerRow);
@@ -53,17 +51,17 @@ export default function BounceCards({
 				const colsInThisRow = Math.min(cardsPerRow, count - row * cardsPerRow);
 				
 				// 计算水平偏移（居中显示当前行的卡片）
-				const rowWidth = (colsInThisRow - 1) * spacing;
+				const rowWidth = (colsInThisRow - 1) * (cardWidth + spacing);
 				const startX = -rowWidth / 2;
-				const offsetX = startX + col * spacing;
+				const offsetX = startX + col * (cardWidth + spacing);
 				
 				// 计算垂直偏移，营造错落感
-				const baseOffsetY = row * 80; // 行间距
-				const randomOffsetY = (Math.sin(i * 2.5) * 20); // 添加轻微的随机垂直偏移
+				const baseOffsetY = row * (cardWidth + 40); // 优化行间距
+				const randomOffsetY = (Math.sin(i * 2.5) * 10); // 减小随机偏移
 				const offsetY = baseOffsetY + randomOffsetY;
 				
 				// 旋转角度：更加随机和自然
-				const rotation = (Math.sin(i * 1.5) * 8) + (col - (colsInThisRow - 1) / 2) * 3;
+				const rotation = (Math.sin(i * 1.5) * 5) + (col - (colsInThisRow - 1) / 2) * 2; // 减小旋转角度
 				
 				styles.push(`rotate(${rotation}deg) translate(${offsetX}px, ${offsetY}px)`);
 			}
@@ -84,10 +82,30 @@ export default function BounceCards({
 		return styles;
 	};
 
+	// 计算移动端容器所需的最小高度
+	const calculateMobileHeight = (count) => {
+		if (!isMobile || count === 0) return "auto";
+		
+		const screenWidth = window.innerWidth;
+		const cardWidth = screenWidth <= 480 ? 100 : 120;
+		const spacing = screenWidth <= 480 ? 30 : 40;
+		const cardsPerRow = Math.floor(screenWidth / (cardWidth + spacing)) || 2;
+		const rows = Math.ceil(count / cardsPerRow);
+		
+		// 计算总高度：卡片高度 * 行数 + 间距 + padding
+		const totalHeight = rows * (cardWidth + 40) + 360;
+		return `${totalHeight}px`;
+	};
+
 	const finalTransformStyles = transformStyles || getDefaultTransformStyles(images.length);
 
 	// 根据设备类型调整推开距离
-	const getPushOffset = () => isMobile ? 80 : 160;
+	const getPushOffset = () => {
+		if (isMobile) {
+			return window.innerWidth <= 480 ? 50 : 60; // 减小移动端推开距离
+		}
+		return 160;
+	};
 
 	useEffect(() => {
 		const ctx = gsap.context(() => {
@@ -230,10 +248,11 @@ export default function BounceCards({
 			className={`bouncecrdscontainer ${className} ${isMobile ? "mobile" : ""}`}
 			ref={containerRef}
 			style={{
+				top: "-140px",
 				height: isMobile ? "auto" : containerHeight,
 				position: "relative",
 				width: isMobile ? "100%" : containerWidth,
-				minHeight: isMobile ? "250px" : containerHeight
+				minHeight: isMobile ? calculateMobileHeight(images.length) : containerHeight
 			}}
 		>
 			{images.map((src, idx) => (
