@@ -49,12 +49,20 @@
 @media (max-width: 768px) {
 	.gallery-container {
 		padding: 1rem;
+		padding-top: 4rem;
+		min-height: 100vh;
+	}
+	.gallery-header {
+		margin-bottom: 1rem;
 	}
 	.gallery-title {
 		font-size: 2rem;
 	}
 	.gallery-subtitle {
 		font-size: 1rem;
+	}
+	.gallery-content {
+		align-items: flex-start;
 	}
 }
 @media (max-width: 480px) {

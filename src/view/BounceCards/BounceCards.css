@@ -8,7 +8,8 @@
 	max-width: 100%;
 	height: 400px;
 }
-.card {
+/* PC端卡片样式 */
+.bouncecrdscontainer:not(.mobile) .card {
 	overflow: hidden;
 	position: absolute;
 	border: 5px solid #fff;
@@ -19,9 +20,40 @@
 	cursor: pointer;
 	transition: box-shadow 0.3s ease;
 }
-.card:hover,
+/* 移动端卡片样式 - 使用flex布局 */
+.bouncecrdscontainer.mobile {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 20px;
+	padding: 20px;
+	width: 100%;
+	height: auto !important;
+	min-height: auto !important;
+}
+.bouncecrdscontainer.mobile .card {
+	overflow: hidden;
+	position: relative !important;
+	border: 3px solid #fff;
+	border-radius: 15px;
+	width: calc(50% - 10px);
+	max-width: 150px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+	transform: none !important;
+	transition: box-shadow 0.3s ease, transform 0.3s ease;
+	aspect-ratio: 1;
+}
+.bouncecrdscontainer.mobile .card:active {
+	transform: scale(0.95) !important;
+}
+.bouncecrdscontainer:not(.mobile) .card:hover,
 .card.touched {
 	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+.bouncecrdscontainer.mobile .card:hover {
+	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
 }
 .card .image {
 	width: 100%;
@@ -32,35 +64,26 @@
 }
 /* 移动端适配 */
 @media (max-width: 768px) {
-	.bouncecrdscontainer {
-		overflow: visible;
-		padding: 40px 20px;
-		width: 100%;
-		height: auto;
-		min-height: 300px;
-	}
 	.bouncecrdscontainer.mobile {
-		overflow: visible;
-		/* 确保有足够的高度容纳多行卡片 */
-		padding-bottom: 60px;
+		gap: 15px;
+		padding: 15px;
 	}
-	.card {
-		/* 移动端：移除默认的 left 和 top，使用 transform 定位 */
-		border: 3px solid #fff;
-		border-radius: 15px;
-		width: 120px;
+	.bouncecrdscontainer.mobile .card {
+		width: calc(50% - 7.5px);
+		max-width: 140px;
 	}
 }
 /* 小屏幕移动设备 */
 @media (max-width: 480px) {
-	.bouncecrdscontainer {
-		padding: 30px 15px 50px;
-		min-height: 250px;
+	.bouncecrdscontainer.mobile {
+		gap: 12px;
+		padding: 12px;
 	}
-	.card {
+	.bouncecrdscontainer.mobile .card {
 		border: 2px solid #fff;
 		border-radius: 12px;
-		width: 100px;
+		width: calc(50% - 6px);
+		max-width: 120px;
 	}
 }
 /* 触摸设备优化 */

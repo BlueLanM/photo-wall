@@ -248,11 +248,11 @@ export default function BounceCards({
 			className={`bouncecrdscontainer ${className} ${isMobile ? "mobile" : ""}`}
 			ref={containerRef}
 			style={{
-				top: "-140px",
+				top: isMobile ? "0" : "-140px",
 				height: isMobile ? "auto" : containerHeight,
 				position: "relative",
 				width: isMobile ? "100%" : containerWidth,
-				minHeight: isMobile ? calculateMobileHeight(images.length) : containerHeight
+				minHeight: isMobile ? "auto" : containerHeight
 			}}
 		>
 			{images.map((src, idx) => (
@@ -260,7 +260,7 @@ export default function BounceCards({
 					key={idx}
 					className={`card card-${idx} ${touchedCard === idx ? "touched" : ""}`}
 					style={{
-						transform: finalTransformStyles[idx] ?? "none"
+						transform: isMobile ? "none" : (finalTransformStyles[idx] ?? "none")
 					}}
 					onMouseEnter={() => !isMobile && pushSiblings(idx)}
 					onMouseLeave={() => !isMobile && resetSiblings()}
