@@ -82,21 +82,6 @@ export default function BounceCards({
 		return styles;
 	};
 
-	// 计算移动端容器所需的最小高度
-	const calculateMobileHeight = (count) => {
-		if (!isMobile || count === 0) return "auto";
-		
-		const screenWidth = window.innerWidth;
-		const cardWidth = screenWidth <= 480 ? 100 : 120;
-		const spacing = screenWidth <= 480 ? 30 : 40;
-		const cardsPerRow = Math.floor(screenWidth / (cardWidth + spacing)) || 2;
-		const rows = Math.ceil(count / cardsPerRow);
-		
-		// 计算总高度：卡片高度 * 行数 + 间距 + padding
-		const totalHeight = rows * (cardWidth + 40) + 360;
-		return `${totalHeight}px`;
-	};
-
 	const finalTransformStyles = transformStyles || getDefaultTransformStyles(images.length);
 
 	// 根据设备类型调整推开距离
