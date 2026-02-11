@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useCallback } from "react";
+import { useEffect, useMemo, useRef, useCallback, useState } from "react";
 import { useGesture } from "@use-gesture/react";
 import "./index.css";
 
@@ -171,6 +171,11 @@ export default function DomeGallery({
 	};
 
 	const lockedRadiusRef = useRef(null);
+	
+	// 图片懒加载状态
+	const [loadedImages, setLoadedImages] = useState(new Set());
+	const [isInitialLoad, setIsInitialLoad] = useState(true);
+	const imageLoadCountRef = useRef(0);
 
 	useEffect(() => {
 		const root = rootRef.current;
@@ -588,6 +593,42 @@ export default function DomeGallery({
 		[openItemFromElement]
 	);
 
+	// 图片懒加载逻辑
+	useEffect(() => {
+		const loadImage = (src, index) => {
+			return new Promise((resolve, reject) => {
+				const img = new Image();
+				img.onload = () => {
+					setLoadedImages(prev => new Set([...prev, index]));
+					imageLoadCountRef.current += 1;
+					resolve();
+				};
+				img.onerror = reject;
+				img.src = src;
+			});
+		};
+
+		// 优先加载前面的图片（用户最可能先看到的）
+		const loadImagesProgressively = async() => {
+			const totalImages = items.length;
+			const batchSize = 5; // 每批加载5张
+
+			for (let i = 0; i < totalImages; i += batchSize) {
+				const batch = items.slice(i, Math.min(i + batchSize, totalImages));
+				await Promise.allSettled(
+					batch.map((item, idx) => loadImage(item.src, i + idx))
+				);
+				
+				// 第一批加载完成后，标记初始加载完成
+				if (i === 0) {
+					setIsInitialLoad(false);
+				}
+			}
+		};
+
+		loadImagesProgressively();
+	}, [items]);
+
 	useEffect(() => {
 		return () => {
 			document.body.classList.remove("dg-scroll-lock");
@@ -610,34 +651,48 @@ export default function DomeGallery({
 			<main ref={mainRef} className="sphere-main">
 				<div className="stage">
 					<div ref={sphereRef} className="sphere">
-						{items.map((it, i) => (
-							<div
-								key={`${it.x},${it.y},${i}`}
-								className="item"
-								data-src={it.src}
-								data-offset-x={it.x}
-								data-offset-y={it.y}
-								data-size-x={it.sizeX}
-								data-size-y={it.sizeY}
-								style={{
-									["--offset-x"]: it.x,
-									["--offset-y"]: it.y,
-									["--item-size-x"]: it.sizeX,
-									["--item-size-y"]: it.sizeY
-								}}
-							>
+						{items.map((it, i) => {
+							const isLoaded = loadedImages.has(i);
+							return (
 								<div
-									className="item__image"
-									role="button"
-									tabIndex={0}
-									aria-label={it.alt || "Open image"}
-									onClick={onTileClick}
-									onPointerUp={onTilePointerUp}
+									key={`${it.x},${it.y},${i}`}
+									className="item"
+									data-src={it.src}
+									data-offset-x={it.x}
+									data-offset-y={it.y}
+									data-size-x={it.sizeX}
+									data-size-y={it.sizeY}
+									style={{
+										["--offset-x"]: it.x,
+										["--offset-y"]: it.y,
+										["--item-size-x"]: it.sizeX,
+										["--item-size-y"]: it.sizeY
+									}}
 								>
-									<img src={it.src} draggable={false} alt={it.alt} />
+									<div
+										className={`item__image ${isLoaded ? "loaded" : "loading"}`}
+										role="button"
+										tabIndex={0}
+										aria-label={it.alt || "Open image"}
+										onClick={onTileClick}
+										onPointerUp={onTilePointerUp}
+									>
+										{!isLoaded && (
+											<div className="image-placeholder">
+												<div className="spinner"></div>
+											</div>
+										)}
+										<img 
+											src={it.src} 
+											draggable={false} 
+											alt={it.alt}
+											style={{ opacity: isLoaded ? 1 : 0 }}
+											loading="lazy"
+										/>
+									</div>
 								</div>
-							</div>
-						))}
+							);
+						})}
 					</div>
 				</div>
 
@@ -650,6 +705,14 @@ export default function DomeGallery({
 					<div ref={scrimRef} className="scrim" />
 					<div ref={frameRef} className="frame" />
 				</div>
+
+				{/* 加载进度指示器 */}
+				{isInitialLoad && (
+					<div className="initial-loader">
+						<div className="loader-spinner"></div>
+						<p className="loader-text">加载图片中...</p>
+					</div>
+				)}
 			</main>
 		</div>
 	);

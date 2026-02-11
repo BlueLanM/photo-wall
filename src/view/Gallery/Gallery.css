@@ -73,3 +73,167 @@
 		font-size: 0.9rem;
 	}
 }
+/* 图片放大预览样式 (Lightbox) */
+.lightbox-overlay {
+	display: flex;
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	z-index: 9999;
+	justify-content: center;
+	align-items: center;
+	outline: none;
+	background-color: rgba(0, 0, 0, 0.5);
+	animation: fadeIn 0.3s ease-out;
+}
+.lightbox-content {
+	display: flex;
+	position: relative;
+	flex-direction: column;
+	align-items: center;
+	max-width: 90vw;
+	max-height: 90vh;
+	animation: zoomIn 0.3s ease-out;
+}
+.lightbox-image {
+	border-radius: 8px;
+	width: auto;
+	max-width: 100%;
+	height: auto;
+	max-height: 85vh;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+	object-fit: contain;
+}
+.lightbox-caption {
+	margin-top: 1rem;
+	padding: 0.5rem 1rem;
+	border-radius: 4px;
+	background-color: rgba(0, 0, 0, 0.5);
+	text-align: center;
+	font-size: 1rem;
+	color: rgba(255, 255, 255, 0.9);
+}
+.lightbox-close {
+	display: flex;
+	position: fixed;
+	right: 2rem;
+	top: 2rem;
+	z-index: 10001;
+	justify-content: center;
+	align-items: center;
+	padding: 0;
+	border: 2px solid rgba(255, 255, 255, 0.3);
+	border-radius: 50%;
+	width: 48px;
+	height: 48px;
+	background-color: rgba(255, 255, 255, 0.1);
+	cursor: pointer;
+	line-height: 1;
+	font-size: 2rem;
+	color: white;
+	transition: all 0.3s ease;
+}
+.lightbox-close:hover {
+	border-color: rgba(255, 255, 255, 0.6);
+	background-color: rgba(255, 255, 255, 0.2);
+	transform: rotate(90deg);
+}
+.lightbox-nav {
+	display: flex;
+	position: fixed;
+	top: 50%;
+	z-index: 10001;
+	justify-content: center;
+	align-items: center;
+	padding: 0;
+	border: 2px solid rgba(255, 255, 255, 0.3);
+	border-radius: 50%;
+	width: 48px;
+	height: 48px;
+	background-color: rgba(255, 255, 255, 0.1);
+	cursor: pointer;
+	line-height: 1;
+	font-size: 2.5rem;
+	color: white;
+	transform: translateY(-50%);
+	transition: all 0.3s ease;
+}
+.lightbox-nav:hover {
+	border-color: rgba(255, 255, 255, 0.6);
+	background-color: rgba(255, 255, 255, 0.2);
+	transform: translateY(-50%) scale(1.1);
+}
+.lightbox-prev {
+	left: 2rem;
+}
+.lightbox-next {
+	right: 2rem;
+}
+/* Lightbox 动画 */
+/* stylelint-disable-next-line keyframes-name-pattern */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+/* stylelint-disable-next-line keyframes-name-pattern */
+@keyframes zoomIn {
+	from {
+		opacity: 0;
+		transform: scale(0.8);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+/* Lightbox 响应式设计 */
+@media (max-width: 768px) {
+	.lightbox-close {
+		right: 1rem;
+		top: 1rem;
+		width: 40px;
+		height: 40px;
+		font-size: 1.5rem;
+	}
+	.lightbox-nav {
+		width: 40px;
+		height: 40px;
+		font-size: 2rem;
+	}
+	.lightbox-prev {
+		left: 1rem;
+	}
+	.lightbox-next {
+		right: 1rem;
+	}
+	.lightbox-caption {
+		margin-top: 0.5rem;
+		font-size: 0.9rem;
+	}
+	.lightbox-image {
+		max-height: 80vh;
+	}
+}
+@media (max-width: 480px) {
+	.lightbox-close,
+	.lightbox-nav {
+		width: 36px;
+		height: 36px;
+	}
+	.lightbox-close {
+		font-size: 1.3rem;
+	}
+	.lightbox-nav {
+		font-size: 1.8rem;
+	}
+	.lightbox-caption {
+		padding: 0.4rem 0.8rem;
+		font-size: 0.8rem;
+	}
+}

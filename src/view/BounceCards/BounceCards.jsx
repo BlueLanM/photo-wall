@@ -12,7 +12,8 @@ export default function BounceCards({
 	animationStagger = 0.06,
 	easeType = "elastic.out(1, 0.8)",
 	transformStyles = null,
-	enableHover = true
+	enableHover = true,
+	onImageClick = null
 }) {
 	const containerRef = useRef(null);
 	const [isMobile, setIsMobile] = useState(false);
@@ -245,12 +246,14 @@ export default function BounceCards({
 					key={idx}
 					className={`card card-${idx} ${touchedCard === idx ? "touched" : ""}`}
 					style={{
-						transform: isMobile ? "none" : (finalTransformStyles[idx] ?? "none")
+						transform: isMobile ? "none" : (finalTransformStyles[idx] ?? "none"),
+						cursor: onImageClick ? "pointer" : "default"
 					}}
 					onMouseEnter={() => !isMobile && pushSiblings(idx)}
 					onMouseLeave={() => !isMobile && resetSiblings()}
 					onTouchStart={() => handleTouchStart(idx)}
 					onTouchEnd={handleTouchEnd}
+					onClick={() => onImageClick && onImageClick(idx)}
 				>
 					<img className="image" src={src} alt={`card-${idx}`} />
 				</div>
@@ -268,5 +271,6 @@ BounceCards.propTypes = {
 	easeType: PropTypes.string,
 	enableHover: PropTypes.bool,
 	images: PropTypes.arrayOf(PropTypes.string),
-	transformStyles: PropTypes.arrayOf(PropTypes.string)
+	transformStyles: PropTypes.arrayOf(PropTypes.string),
+	onImageClick: PropTypes.func
 };
